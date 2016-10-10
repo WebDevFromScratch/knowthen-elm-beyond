@@ -1,6 +1,7 @@
 module Main exposing (..)
 
 import Html exposing (..)
+import Html.Events exposing (..)
 import Html.App as App
 import Http
 import Task
@@ -46,6 +47,7 @@ init =
 type Msg
     = Joke String
     | Fail Http.Error
+    | NewJoke
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -59,6 +61,9 @@ update msg model =
         Fail error ->
             ( (toString error), Cmd.none )
 
+        NewJoke ->
+            ( model, randomJoke )
+
 
 
 -- view
@@ -66,7 +71,12 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div [] [ text model ]
+    div []
+        [ div [] [ text model ]
+        , button
+            [ onClick NewJoke ]
+            [ text "New joke" ]
+        ]
 
 
 

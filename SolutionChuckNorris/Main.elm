@@ -62,7 +62,7 @@ update msg model =
             ( (toString error), Cmd.none )
 
         NewJoke ->
-            ( model, randomJoke )
+            ( "fetching a joke...", randomJoke )
 
 
 
@@ -73,6 +73,7 @@ view : Model -> Html Msg
 view model =
     div []
         [ div [] [ text model ]
+        , br [] []
         , button
             [ onClick NewJoke ]
             [ text "New joke" ]

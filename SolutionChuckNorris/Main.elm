@@ -5,6 +5,7 @@ import Html.Events exposing (..)
 import Html.App as App
 import Http
 import Task
+import Json.Decode exposing (..)
 
 
 randomJoke : Cmd Msg
@@ -14,7 +15,8 @@ randomJoke =
             "http://api.icndb.com/jokes/random"
 
         task =
-            Http.getString url
+            -- Http.getString url
+            Http.get (at [ "value", "joke" ] string) url
 
         cmd =
             Task.perform Fail Joke task

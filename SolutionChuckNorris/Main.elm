@@ -6,6 +6,7 @@ import Html.App as App
 import Http
 import Task
 import Json.Decode exposing (..)
+import Json.Decode.Pipeline exposing (decode, required, optional)
 
 
 type alias Response =
@@ -15,12 +16,22 @@ type alias Response =
     }
 
 
+
+-- responseDecoder : Decoder Response
+-- responseDecoder =
+--     object3 Response
+--         ("id" := int)
+--         ("joke" := string)
+--         ("categories" := list string)
+--         |> at [ "value" ]
+
+
 responseDecoder : Decoder Response
 responseDecoder =
-    object3 Response
-        ("id" := int)
-        ("joke" := string)
-        ("categories" := list string)
+    decode Response
+        |> required "id" int
+        |> required "joke" string
+        |> optional "categories" (list string) []
         |> at [ "value" ]
 
 

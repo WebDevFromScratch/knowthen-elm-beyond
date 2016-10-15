@@ -8,6 +8,22 @@ import Task
 import Json.Decode exposing (..)
 
 
+type alias Response =
+    { id : Int
+    , joke : String
+    , categories : List String
+    }
+
+
+responseDecoder : Decoder Response
+responseDecoder =
+    object3 Response
+        ("id" := int)
+        ("joke" := string)
+        ("categories" := list string)
+        |> at [ "value" ]
+
+
 randomJoke : Cmd Msg
 randomJoke =
     let
@@ -16,7 +32,8 @@ randomJoke =
 
         task =
             -- Http.getString url
-            Http.get (at [ "value", "joke" ] string) url
+            -- Http.get (at [ "value", "joke" ] string) url
+            Http.get responseDecoder url
 
         cmd =
             Task.perform Fail Joke task
@@ -47,7 +64,7 @@ init =
 
 
 type Msg
-    = Joke String
+    = Joke Response
     | Fail Http.Error
     | NewJoke
 
@@ -55,10 +72,10 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        Joke joke ->
+        Joke response ->
             -- this satisfies the type, but at the same time doesn't actually
             -- initiate any more actions (since we don't want any here)
-            ( joke, Cmd.none )
+            ( toString (response.id) ++ " " ++ response.joke, Cmd.none )
 
         Fail error ->
             ( (toString error), Cmd.none )
